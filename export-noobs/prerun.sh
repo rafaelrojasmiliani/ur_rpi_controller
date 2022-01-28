@@ -49,6 +49,7 @@ done
 echo "/boot: offset $BOOT_OFFSET, length $BOOT_LENGTH"
 echo "/:     offset $ROOT_OFFSET, length $ROOT_LENGTH"
 
+echo '--- calling this part of the code ----'
 mkdir -p "${STAGE_WORK_DIR}/rootfs"
 mkdir -p "${NOOBS_DIR}"
 
