@@ -1,0 +1,13 @@
+export IMG_NAME=ur_gateway
+export RELEASE=buster
+export DEPLOY_ZIP=1
+export LOCALE_DEFAULT=de_DE.UTF-8
+export TARGET_HOSTNAME=ur_gateway
+export KEYBOARD_KEYMAP=de
+export KEYBOARD_LAYOUT="de"
+export FIRST_USER_NAME=developer
+export FIRST_USER_PASS="unibz"
+export ENABLE_SSH=1
+export WPA_ESSID="ProximityNetwork"
+export WPA_PASSWORD=robotics
+export WPA_COUNTRY=IT
