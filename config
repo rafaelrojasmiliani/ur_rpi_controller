@@ -1,7 +1,9 @@
 export IMG_NAME=ur_gateway
 export RELEASE=buster
 export DEPLOY_ZIP=1
-export LOCALE_DEFAULT=de_DE.UTF-8
+export LOCALE_DEFAULT="de_DE.UTF-8"
+export LC_ALL="en_US.UTF-8"
+export LANGUAGE="en_US.UTF-8"
 export TARGET_HOSTNAME=ur_gateway
 export KEYBOARD_KEYMAP=de
 export KEYBOARD_LAYOUT="de"
