@@ -98,8 +98,9 @@ install_ur_driver(){
 install_cmake(){
     cd / && \
         curl -OL https://github.com/Kitware/CMake/releases/download/v3.20.1/cmake-3.20.1.tar.gz && \
+        tar -xzf cmake-3.20.1.tar.gz && \
         cd cmake-3.20.1 && \
-         ./bootstrap --prefix=/usr -- -D_FILE_OFFSET_BITS=64-D_FILE_OFFSET_BITS=64 && \
+         ./bootstrap --prefix=/usr -- -D_FILE_OFFSET_BITS=64 && \
          make && \
          make install
 
