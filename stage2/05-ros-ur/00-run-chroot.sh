@@ -7,7 +7,8 @@ install_sistem_deps(){
         Dpkg::Options::="--force-confnew" \
                         gnupg python3 python3-dev python3-pip build-essential \
                         libyaml-cpp-dev lsb-release isc-dhcp-server \
-                        wget ca-certificates ntpdate
+                        wget ca-certificates ntpdate curl
+
 
     sh -c """
     echo deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main \
@@ -17,18 +18,18 @@ install_sistem_deps(){
         --recv-key C1CF6E31E6BADE8868B172B4F42ED6FBAB17C654
 #
     apt-get update
+
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends -o \
         Dpkg::Options::="--force-confnew" \
         python3-rosdep python3-rosinstall-generator python3-wstool \
         python3-rosinstall build-essential \
-        cmake python3-catkin-tools git python-pip python3-pip
+        python3-catkin-tools git python-pip python3-pip
     pip3 install pycryptodome
 #
     echo '-------- rosdep init   -----'
     echo "$(whoami) ---"
 #    [ ! -d /etc/ros/rosdep/sources.list.d/ ] && mkdir -p /etc/ros/rosdep/sources.list.d/ 
 #    wget -O /etc/ros/rosdep/sources.list.d/20-default.list https://raw.githubusercontent.com/ros/rosdistro/master/rosdep/sources.list.d/20-default.list || echo 'wget failt to get list -------------------------'
-    export SSL_CERT_FILE=/usr/lib/ssl/certs/ca-certificates.crt
     [ -f /etc/ros/rosdep/sources.list.d/20-default.list ] && rm /etc/ros/rosdep/sources.list.d/20-default.list
     rosdep init || echo 'rosdep init failed ----' #&& exit 1
 #    rosdep fix-permissions
@@ -94,7 +95,18 @@ install_ur_driver(){
     catkin_make_isolated --install-space /opt/ros/noetic -j2
 }
 
+install_cmake(){
+    cd / && \
+        curl -OL https://github.com/Kitware/CMake/releases/download/v3.20.1/cmake-3.20.1.tar.gz && \
+        cd cmake-3.20.1 && \
+         ./bootstrap --prefix=/usr -- -D_FILE_OFFSET_BITS=64-D_FILE_OFFSET_BITS=64 && \
+         make && \
+         make install
+
+}
 main(){
+    export SSL_CERT_FILE=/usr/lib/ssl/certs/ca-certificates.crt
+    install_cmake
     install_sistem_deps
     install_ros_base
     install_ur_driver
