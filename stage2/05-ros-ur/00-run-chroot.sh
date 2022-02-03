@@ -2,13 +2,6 @@
 
 install_sistem_deps(){
     [ -f /etc/apt/sources.list.d/ros-latest.list ] && rm /etc/apt/sources.list.d/ros-latest.list
-    apt-get update
-    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends -o \
-        Dpkg::Options::="--force-confnew" \
-                        gnupg python3 python3-dev python3-pip build-essential \
-                        libyaml-cpp-dev lsb-release isc-dhcp-server \
-                        wget ca-certificates ntpdate curl
-
 
     sh -c """
     echo deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main \
@@ -21,7 +14,7 @@ install_sistem_deps(){
 
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends -o \
         Dpkg::Options::="--force-confnew" \
-        python3-rosdep python3-rosinstall-generator python3-wstool \
+        python3-rosdep python3-rosinstall-generator python3-wstool python-wstool \
         python3-rosinstall build-essential \
         python3-catkin-tools git python-pip python3-pip
     pip3 install pycryptodome
@@ -66,7 +59,6 @@ install_ros_base(){
 
     # 4) compile with cmake
     #./src/catkin/bin/catkin_make_isolated --install \
-    cat /usr/share/cmake-3.16/Modules/CMakeDetermineCompilerId.cmake
     catkin config \
      --install \
         -DCMAKE_BUILD_TYPE=Release \
@@ -96,13 +88,26 @@ install_ur_driver(){
 }
 
 install_cmake(){
+
+    apt-get update
+    DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends -o \
+        Dpkg::Options::="--force-confnew" \
+                        gnupg python3 python3-dev python3-pip build-essential \
+                        libyaml-cpp-dev lsb-release isc-dhcp-server \
+                        wget ca-certificates ntpdate curl libssl-dev gfortran
+
+    CMAKEVERSION="3.21.0"
+
+    [ -f /cmake-$CMAKEVERSION.tar.gz ] && rm /cmake-$CMAKEVERSION.tar.gz
+    [ -d /cmake-$CMAKEVERSION ] && rm -rf /cmake-$CMAKEVERSION
     cd / && \
-        curl -OL https://github.com/Kitware/CMake/releases/download/v3.20.1/cmake-3.20.1.tar.gz && \
-        tar -xzf cmake-3.20.1.tar.gz && \
-        cd cmake-3.20.1 && \
+        curl -OL https://github.com/Kitware/CMake/releases/download/v$CMAKEVERSION/cmake-$CMAKEVERSION.tar.gz && \
+        tar -xzf cmake-$CMAKEVERSION.tar.gz && \
+        cd /cmake-$CMAKEVERSION && \
          ./bootstrap --prefix=/usr -- -D_FILE_OFFSET_BITS=64 && \
-         make && \
-         make install
+         make -j 30 && \
+         /cmake-$CMAKEVERSION/bin/cpack -G DEB  && \
+         dpkg -i /cmake-$CMAKEVERSION/cmake*.deb
 
 }
 main(){
